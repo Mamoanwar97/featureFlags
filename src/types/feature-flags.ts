@@ -9,5 +9,3 @@ export type FeatureFlag = {
   status: Status;
   createdAt: string;
 };
-
-export type DisplayFeatureFlag = Omit<FeatureFlag, "id">;

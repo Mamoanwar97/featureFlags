@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+# Feature Flags Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based UI for viewing and managing feature flags across environments.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Overview cards** — at-a-glance counts of total, enabled, and disabled flags, plus a breakdown by environment
+- **Feature flags table** — sortable table listing all flags with their name, environment, status, and creation date
+- **Filtering** — filter flags by status (enabled / disabled) and by environment (development, staging, production)
+- **Toggle flags** — enable or disable any flag directly from the table
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Layer | Library |
+|---|---|
+| UI framework | React 19 + TypeScript |
+| Build tool | Vite |
+| Data fetching | TanStack Query v5 |
+| Table | TanStack Table v8 |
+| Styling | Tailwind CSS v4 |
+| Components | Radix UI / shadcn |
+| Toasts | Sonner |
+| API mocking | MSW v2 |
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Prerequisites:** Node.js 18+
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+```bash
+# Install dependencies
+npm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start the dev server (with MSW mock API)
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The app will be available at `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Available Scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Script | Description |
+|---|---|
+| `npm run dev` | Start development server with HMR |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run ESLint |
+
+## Project Structure
+
 ```
+src/
+├── apis/            # Fetch functions (list flags, toggle flag)
+├── featuresTable/   # Table component, column definitions, filters, cells
+├── mocks/           # MSW handlers and fixture data
+├── queries/         # TanStack Query hooks
+├── types/           # Shared TypeScript types
+├── components/ui/   # Reusable UI primitives (shadcn)
+├── overview-cards   # Summary stat cards
+└── App.tsx          # Root component
+```
+
+## Mock API
+
+The app uses [MSW](https://mswjs.io/) to intercept API calls during development — no backend needed.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/feature-flags` | List all feature flags |
+| PUT | `/api/feature-flags/:id` | Toggle a flag's status |
+
+Fixture data lives in `src/mocks/fixtures.ts` and can be edited to add or change flags.
