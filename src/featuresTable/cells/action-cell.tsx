@@ -8,7 +8,7 @@ import { toast } from "sonner";
 type ActionCellProps = CellContext<FeatureFlag, unknown>;
 
 export const ActionCell = ({ row }: ActionCellProps) => {
-  const featureToggleMutation = useMutation({
+  const toggleMutation = useMutation({
     mutationFn: () => toggleFeatureFlag(row.original.id),
     onSuccess: (_, __, ___, context) => {
       context.client.invalidateQueries({ queryKey: ["featureFlags"] });
@@ -25,16 +25,26 @@ export const ActionCell = ({ row }: ActionCellProps) => {
     },
   });
 
+  const isEnabled = row.original.status === "enabled";
+
   return (
     <Button
-      variant="ghost"
-      disabled={featureToggleMutation.isPending}
-      onClick={() => featureToggleMutation.mutate()}
+      variant="outline"
+      size="sm"
+      onClick={() => toggleMutation.mutate()}
+      disabled={toggleMutation.isPending}
+      className={
+        isEnabled
+          ? "text-rose-600 border-rose-200 hover:bg-rose-50 hover:text-rose-600"
+          : "text-emerald-600 border-emerald-200 hover:bg-emerald-50 hover:text-emerald-600"
+      }
     >
-      {featureToggleMutation.isPending ? (
+      {toggleMutation.isPending ? (
         <Spinner data-icon="inline-start" />
+      ) : isEnabled ? (
+        "Disable"
       ) : (
-        "Toggle"
+        "Enable"
       )}
     </Button>
   );

@@ -30,7 +30,7 @@ export const FilterBar = ({ table }: FilterBarProps) => {
   };
 
   return (
-    <div className="flex items-center py-4">
+    <div className="flex items-center gap-2 mb-4">
       <EnabledFilter
         value={enabledFilterValue}
         onChange={handleEnabledChange}

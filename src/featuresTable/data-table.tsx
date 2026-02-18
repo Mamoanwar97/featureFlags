@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -10,27 +9,31 @@ import {
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { FilterBar } from "./filters/filters-bar";
-import type { FeatureFlag } from "@/types/feature-flags";
 import { TableBodyContent } from "./table-body-content";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { columns } from "./columns";
+import { listFlagsQuery } from "@/queries/list-flags-query";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  isLoading: boolean;
-}
-
-export function FeatureTable<TValue>({
-  columns,
-  data,
-  isLoading,
-}: DataTableProps<FeatureFlag, TValue>) {
+export function FeatureTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  const featureFlagsQuery = listFlagsQuery();
+
+  useEffect(() => {
+    if (featureFlagsQuery.isError) {
+      toast.error("Failed to fetch feature flags. Please try again later.", {
+        position: "top-center",
+      });
+    }
+  }, [featureFlagsQuery.isError]);
+
+  const data = featureFlagsQuery.data?.featureFlags ?? [];
 
   const table = useReactTable({
     data,
@@ -73,7 +76,7 @@ export function FeatureTable<TValue>({
           <TableBody>
             <TableBodyContent
               columns={columns}
-              isLoading={isLoading}
+              isLoading={featureFlagsQuery.isLoading}
               table={table}
             />
           </TableBody>

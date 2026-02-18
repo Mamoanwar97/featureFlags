@@ -17,11 +17,13 @@ export function TableBodyContent<TValue>({
   if (isLoading) {
     return (
       <TableRow>
-        <TableCell
-          colSpan={columns.length}
-          className="h-24 align-middle justify-center"
-        >
-          <Spinner className="m-auto size-8" />
+        <TableCell colSpan={columns.length} className="py-16 text-center">
+          <div className="flex items-center justify-center gap-3">
+            <Spinner className="size-5 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">
+              Loading flags...
+            </span>
+          </div>
         </TableCell>
       </TableRow>
     );
@@ -45,8 +47,11 @@ export function TableBodyContent<TValue>({
 
   return (
     <TableRow>
-      <TableCell colSpan={columns.length} className="h-24 text-center">
-        No results.
+      <TableCell colSpan={columns.length} className="py-16 text-center">
+        <p className="text-sm font-medium">No matching feature flags</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Adjust your filters to see results
+        </p>
       </TableCell>
     </TableRow>
   );
